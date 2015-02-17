@@ -138,6 +138,7 @@ def receiveQRFollowInfo(xml):
                 date = cursor.fetchone()
                 openID = message.source
                 ticket = message.ticket
+                print ticket
                 # create table event(openID varchar(10),ticket text,time datetime,primary key (openID));
                 cursor.execute("""insert into event values(%s,%s,%s)""", (str(openID), str(ticket), date[0]))
                 db.commit()
