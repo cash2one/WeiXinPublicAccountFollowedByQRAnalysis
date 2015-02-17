@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title>二维码信息</title>
+		<meta charset="utf-8" />
+		<script>
+		function edit(arg){
+			var t=prompt("请修改备注", arg)
+			var before = arg;
+			if(t == null || t == arg){
+				//不做任何处理
+				alert("用户没有修改备注")
+			}else{
+				//将修改后的备注作为参数发送get请求
+				alert("用户修改的备注为" + t)
+			}
+		}
+		function download(){
+			//发送get请求下载图片
+			alert("准备下载图片")
+		}
+		</script>
+	</head>
+	<form action = "/manage/QR/option" method = "get">
+    	<label>生成二维码的数量</label>
+    	<input type="hidden" name="action" value="addQR" />
+    	<input type = "text" name = "number"><br/>
+    	<input type = "submit" value = "提交"><br/>
+	</form>
+	<form action = "/manage/QR/option" method = "get">
+    	<label>按起始时间搜索（格式：yyyy-mm-dd）</label>
+    	<input type="hidden" name="action" value="search" />
+    	<input type = "text" name = "timeA">
+    	<tag>-</tag>
+    	<input type = "text" name = "timeB"><br/>
+    	<input type = "submit" value = "搜索"><br/>
+	</form>
+	<body>
+		<table border="1" align=cener>
+		<tr align=center>
+			<th>二维码ID</th>
+			<th>二维码图片（可点击下载）</th>
+			<th>二维码性质</th>
+			<th>关注数量</th>
+			<th>二维码备注</th>
+			<th>二维码生成时间</th>
+			<th>修改</th>
+		</tr>
+		{% for item in data%}
+		<tr align=center>
+			<td>{{item.scene_id}}</td>
+			<td><img src={{item.pic}} onclick="download(" + {{item.scene_id}} + ");" width="200", height="200"/></td>
+			<td>永久性</td>
+			<td>{{item.count}}</td>
+			<td>{{item.remark}}</td>
+			<td>{{item.time}}</td>
+			<td colspan="2"><button onclick="edit(" + {{item.scene_id}} + ")">编辑</button> 
+		</tr>
+		{% endfor %}
+	</body>
+<html>
