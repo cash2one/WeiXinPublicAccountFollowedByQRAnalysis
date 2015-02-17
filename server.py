@@ -250,7 +250,6 @@ def verify():
     token = "test"
     wechat = WechatBasic(token=token)
     if request.method == "GET":
-        return "test"
         signature = request.args.get["signature"]
         timestamp = request.args.get["timestamp"]
         nonce = request.args.get["nonce"]
