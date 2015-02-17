@@ -2,6 +2,14 @@
 	<head>
 		<title>二维码信息</title>
 		<meta charset="utf-8" />
+		<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+  				$("img").click(function(){
+  					alert($(this).attr("id"))
+  				});
+			});
+		</script>
 		<script>
 		function edit(arg){
 			var t=prompt("请修改备注", arg)
@@ -14,9 +22,9 @@
 				alert("用户修改的备注为" + t)
 			}
 		}
-		function download(){
+		function download(arg2){
 			//发送get请求下载图片
-			alert("准备下载图片")
+			alert("准备下载图片" + arg2)
 		}
 		</script>
 	</head>
@@ -48,8 +56,8 @@
 		{% for item in data%}
 		<tr align=center>
 			<td>{{item.scene_id}}</td>
-			<td><img src={{item.pic}} onclick="download(" + {{item.scene_id}} + ");" width="200", height="200"/></td>
-			<td>永久性</td>
+			<td><img src={{item.pic}} id = {{item.scene_id}}  width="200", height="200"/></td>
+			<td>"永久性"</td>
 			<td>{{item.count}}</td>
 			<td>{{item.remark}}</td>
 			<td>{{item.time}}</td>

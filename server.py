@@ -144,6 +144,8 @@ def receiveQRFollowInfo(xml):
                 cursor.close()
                 db.close()
                 return True
+            return False
+        return False
     return False
 
 
@@ -168,6 +170,7 @@ def followQuantityCheck(begin, end):
         ticket = QR[1]
         count = cursor.execute("""select * from event where time >= %s and time < %s and ticket=%s""",
                                (str(begin), str(end), str(ticket),))
+        print ticket, count
         result.append({"scene_id": scene_id, "count": int(count)})
     # print result
     return result
@@ -332,4 +335,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
+    # app.run(host='0.0.0.0', port=80)
+    app.run(port=8000)
