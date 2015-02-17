@@ -140,7 +140,7 @@ def receiveQRFollowInfo(xml):
                 ticket = message.ticket
                 print ticket
                 # create table event(openID varchar(10),ticket text,time datetime,primary key (openID));
-                cursor.execute("""insert into event values(%s,%s,%s)""", (str(openID), str(ticket), date[0]))
+                cursor.execute("""insert into event values(%s,%s,%s)""", (str(openID), str(ticket), date[0],))
                 db.commit()
                 cursor.close()
                 db.close()
@@ -169,6 +169,7 @@ def followQuantityCheck(begin, end):
     for QR in QR_list:
         scene_id = QR[0]
         ticket = urllib.quote(QR[1])
+        print ticket, count
         count = cursor.execute("""select * from event where time >= %s and time < %s and ticket=%s""",
                                (str(begin), str(end), str(ticket),))
         print ticket, count
@@ -337,4 +338,4 @@ def main():
 if __name__ == "__main__":
     # main()
     app.run(host='0.0.0.0', port=80)
-    # app.run(port=8000)
+    # lapp.run(port=8000)
