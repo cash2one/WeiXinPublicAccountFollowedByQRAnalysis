@@ -168,7 +168,7 @@ def followQuantityCheck(begin, end):
     result = []
     for QR in QR_list:
         scene_id = QR[0]
-        ticket = QR[1]
+        ticket = urllib.quote(QR[1])
         count = cursor.execute("""select * from event where time >= %s and time < %s and ticket=%s""",
                                (str(begin), str(end), str(ticket),))
         print ticket, count
