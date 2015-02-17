@@ -156,7 +156,7 @@ def followQuantityCheck(begin, end):
     :param end:结束时间
     :return:list,list 的每个元素为一个含有两个元素的 dict,第一个为 scene_id,第二个为这个二维码带来的关注数
     """
-    db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
+    db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR")
     cursor = db.cursor()
     cursor.execute("""select * from QR""")
     records = cursor.fetchall()
