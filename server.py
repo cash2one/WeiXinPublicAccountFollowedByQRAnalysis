@@ -271,7 +271,8 @@ def index():
     检查cookies,如果没有登录就重定向至/manage/login,如果有且检查通过则返回操作页
     """
     if not loggedIn():
-        return render_template("login.html")
+        return redirect(url_for("login"))
+        # return render_template("login.html")
     else:
         return redirect(url_for("option"))
 
@@ -281,17 +282,21 @@ def login():
     """
     用户登录
     """
-    uid = request.args.get("username")
-    psw = request.args.get("password")
-    if loginCheck(uid, psw):
-        response = make_response(redirect(url_for("index")))
-        response.set_cookie("uid", uid, SESSION_TIMEOUT)
-        response.set_cookie("psw", psw, SESSION_TIMEOUT)
-        # return "login successful"
-        # return render_template("index.html")
-        return response
+    action = request.args.get("action", "none")
+    if action == "none":
+        return render_template("login.html")
     else:
-        return "login error"
+        uid = request.args.get("username")
+        psw = request.args.get("password")
+        if loginCheck(uid, psw):
+            response = make_response(redirect(url_for("index")))
+            response.set_cookie("uid", uid, SESSION_TIMEOUT)
+            response.set_cookie("psw", psw, SESSION_TIMEOUT)
+            # return "login successful"
+            # return render_template("index.html")
+            return response
+        else:
+            return "login error"
 
 
 @app.route("/manage/QR/option/")
@@ -327,6 +332,11 @@ def option():
         return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + '.jpeg',
                          as_attachment=True)
         # return urllib.urlopen(pic_url).read()
+    elif action == "remark":  # 修改scene_id=i 的二维码备注
+        scene_id = request.args.get("qid", 1)
+        remark = request.args.get("remark", str(scene_id))
+        changeQRName(scene_id, remark)
+        return render_template("index.html", data=getDataToShow())
     else:  # 请求获取网页
         return render_template("index.html", data=getDataToShow())
 
@@ -342,5 +352,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
-    # app.run(port=8000)
+    # app.run(host='0.0.0.0', port=80)
+    app.run(port=8000)
