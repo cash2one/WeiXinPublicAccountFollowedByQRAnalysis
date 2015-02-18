@@ -7,9 +7,8 @@
 			$(document).ready(function(){
   				$("img").click(function(){
   					var ID = $(this).attr("id")
-  					alert("点击图片的id为" + ID)
   					var url = "/manage/QR/option?action=download&qid=" + ID
-  					  $.get(url, function(data,status){});
+  					 $.get(url, function(data,status){});
 
   				});
 			});
