@@ -5,9 +5,10 @@ import urllib, urllib2
 import json
 import time
 import MySQLdb
+import io
 from wechat_sdk import WechatBasic
 from wechat_sdk.messages import EventMessage
-from flask import Flask, request, redirect, url_for, render_template, make_response
+from flask import Flask, request, redirect, url_for, render_template, make_response, send_file
 
 app = Flask(__name__)
 app.debug = True
@@ -22,7 +23,7 @@ DEFAULT_END = "9999-00-00 00:00:00"
 # functions
 def getAccessToken():
     """
-    get access token of wechat
+    获取 access token
     :return:access token
     """
     URL = "https://api.weixin.qq.com/cgi-bin/token"
@@ -43,7 +44,7 @@ def getAccessToken():
 
 def getQR():
     """
-    generate one QR code
+    生成一个二维码
     """
     global access_token, valid_time
     db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
@@ -87,9 +88,8 @@ def getQR():
 
 def QRRequest(n):
     """
-    generate n QR code
-    :param n:number of QR codes
-    :return:information of n QR codes
+    生成一个二维码
+    :param n:生成二维码的数量
     """
     for i in range(n):
         getQR()
@@ -109,7 +109,6 @@ def changeQRName(scene_id, remark):
         db.commit()
         cursor.close()
         db.close()
-        print 1
         return True
     else:
         return False
@@ -168,7 +167,7 @@ def followQuantityCheck(begin, end):
     result = []
     for QR in QR_list:
         scene_id = QR[0]
-        ticket = urllib.unquote(QR[1]) #对url 编码进行解码
+        ticket = urllib.unquote(QR[1])  # 对url 编码进行解码
         count = cursor.execute("""select * from event where time >= %s and time < %s and ticket=%s""",
                                (str(begin), str(end), str(ticket),))
         # print ticket, count
@@ -309,7 +308,7 @@ def option():
     elif action == "search":  # 关注量只显示事件A,B之间的。
         begin = str(request.args.get("timeA", DEFAULT_BEGIN))
         end = str(request.args.get("timeB", DEFAULT_END))
-        if begin == '':
+        if begin == '':  # 未输入 time 时当做DEFAULT_BEGIN处理
             begin = DEFAULT_BEGIN
         else:
             begin = begin + " 00:00:00"
@@ -319,8 +318,15 @@ def option():
             end = end + " 00:00:00"
         return render_template("index.html", data=getDataToShow(begin, end))
     elif action == "download":  # 下载id为xxx的二维码图片
-        qid = request.args.get("qid", 1)
-        # TODO
+        scene_id = request.args.get("qid", 1)
+        db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
+        cursor = db.cursor()
+        cursor.execute("""select pic from QR where scene_id = %s""", (str(scene_id),))
+        record = cursor.fetchone()
+        pic_url = record[0]
+        return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + '.jpeg',
+                         as_attachment=True)
+        # return urllib.urlopen(pic_url).read()
     else:  # 请求获取网页
         return render_template("index.html", data=getDataToShow())
 
@@ -336,5 +342,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
-    # lapp.run(port=8000)
+    # app.run(host='0.0.0.0', port=80)
+    app.run(port=8000)
