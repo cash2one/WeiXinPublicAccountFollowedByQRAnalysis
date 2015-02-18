@@ -27,8 +27,8 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6857143" vertical-offset="7698" max-vertical-offset="8118">
-              <caret line="363" column="5" selection-start-line="363" selection-start-column="5" selection-end-line="363" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.33333334" vertical-offset="5074" max-vertical-offset="8382">
+              <caret line="237" column="17" selection-start-line="237" selection-start-column="17" selection-end-line="237" selection-end-column="17" />
               <folding>
                 <element signature="e#44#66#0" expanded="true" />
               </folding>
@@ -377,10 +377,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///Library/Python/2.7/site-packages/flask/templating.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="2095" max-vertical-offset="3124">
+          <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="109" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6857143" vertical-offset="7698" max-vertical-offset="8118">
-          <caret line="363" column="5" selection-start-line="363" selection-start-column="5" selection-end-line="363" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="5074" max-vertical-offset="8382">
+          <caret line="237" column="17" selection-start-line="237" selection-start-column="17" selection-end-line="237" selection-end-column="17" />
           <folding>
             <element signature="e#44#66#0" expanded="true" />
           </folding>

@@ -6,6 +6,7 @@ import json
 import time
 import MySQLdb
 import io
+import base64
 from wechat_sdk import WechatBasic
 from wechat_sdk.messages import EventMessage
 from flask import Flask, request, redirect, url_for, render_template, make_response, send_file
@@ -106,7 +107,7 @@ def changeQRName(scene_id, remark):
     """
     db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
     cursor = db.cursor()
-    changed = cursor.execute("""update QR set remark = %s where scene_id = %s""", (str(remark), str(scene_id),))
+    changed = cursor.execute("""update QR set remark = %s where scene_id = %s""", ((remark), str(scene_id),))
     if changed:
         print 'QR which scene_id=%s remark changed to %s' % (scene_id, remark)
         db.commit()
@@ -232,12 +233,16 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
     for record in records:
         scene_id = record[0]
         follower = [i for i in follower_list if i["scene_id"] == scene_id]
+        print (record[1])
+        # remark = unicode(urllib.unquote(str(record[1])), 'utf-8')  # 将url 编码转为 unicode 对象
+        remark = (record[1])
+        print 'remark=' + remark
         item = {
             "scene_id": int(scene_id),
             "pic": str(record[2]),
             "type": "永久性",
             "count": int(follower[0]["count"]),
-            "remark": str(record[1]),
+            "remark": remark,
             "time": str(record[3])
         }
         data.append(item)
@@ -312,7 +317,11 @@ def option():
         action = request.args.get("action", "none")
         print action
         if action == "addQR":  # 生成n个二维码
-            n = int(request.args.get("number", 0))
+            n = request.args.get("number", 0)
+            if n == '':
+                n = 0
+            else:
+                n = int(n)
             QRRequest(n)
             return render_template("index.html", data=getDataToShow())
         elif action == "search":  # 关注量只显示事件A,B之间的。
@@ -340,6 +349,9 @@ def option():
         elif action == "modify":  # 修改scene_id=i 的二维码备注
             scene_id = request.args.get("qid", 1)
             remark = request.args.get("remark", str(scene_id))
+            # print 'encode='+encode_remark
+            # remark = unicode((encode_remark), 'utf-8')  # 将url 编码转为 unicode 对象
+            print remark
             changeQRName(scene_id, remark)
             print 'changed'
             return render_template("index.html", data=getDataToShow())
@@ -352,7 +364,7 @@ def main():
     # QRRequest(0)
     # changeQRName(1, "t")
     # fraudQRFollowCheck("")
-    # followQuantityCheck("0000-00-00 00:00:00", "9999-00-00 00:00:00")
+    followQuantityCheck("0000-00-00 00:00:00", "9999-00-00 00:00:00")
     # receiveQRFollowInfo()
     loginCheck("", "")
     # getDataToShow()
@@ -360,5 +372,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
-    # app.run(port=8000)
+    # app.run(host='0.0.0.0', port=80)
+    app.run(port=8000)
