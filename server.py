@@ -236,7 +236,7 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
         print (record[1])
         # remark = unicode(urllib.unquote(str(record[1])), 'utf-8')  # 将url 编码转为 unicode 对象
         remark = (record[1])
-        print 'remark=' + remark
+        # print 'remark=' + remark
         item = {
             "scene_id": int(scene_id),
             "pic": str(record[2]),
@@ -351,7 +351,7 @@ def option():
             remark = request.args.get("remark", str(scene_id))
             # print 'encode='+encode_remark
             # remark = unicode((encode_remark), 'utf-8')  # 将url 编码转为 unicode 对象
-            print remark
+            # print remark
             changeQRName(scene_id, remark)
             print 'changed'
             return render_template("index.html", data=getDataToShow())
