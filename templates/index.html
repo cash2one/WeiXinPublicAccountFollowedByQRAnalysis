@@ -2,6 +2,32 @@
 	<head>
 		<title>二维码信息</title>
 		<meta charset="utf-8" />
+		<script type="text/javascript" src="jquery-1.11.2.min.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+  				$("img").click(function(){
+  					var ID = $(this).attr("id")
+  					var url = "/manage/QR/option?action=download&qid=" + ID
+  					  $.get(url, function(data,status){});
+
+  				});
+			});
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("button").click(function(){
+					var ID = $(this).attr("id")
+					var content = prompt("请修改备注", ID)
+					var before = ID
+					if(content == null || content == before){
+						//不做任何处理
+					}else{
+						var url = "/manage/QR/option?action=modify&qid=" + ID + "&remark=" + content
+						$.get(url, function(data,status){});
+					}
+				});
+			});
+		</script>
 		<script>
 		function edit(arg){
 			var t=prompt("请修改备注", arg)
@@ -14,12 +40,13 @@
 				alert("用户修改的备注为" + t)
 			}
 		}
-		function download(){
+		function download(arg2){
 			//发送get请求下载图片
-			alert("准备下载图片")
+			alert("准备下载图片" + arg2)
 		}
 		</script>
 	</head>
+
 	<form action = "/manage/QR/option" method = "get">
     	<label>生成二维码的数量</label>
     	<input type="hidden" name="action" value="addQR" />
@@ -53,7 +80,7 @@
 			<td>{{item.count}}</td>
 			<td>{{item.remark}}</td>
 			<td>{{item.time}}</td>
-			<td colspan="2"><button onclick="edit(" + {{item.scene_id}} + ")">编辑</button> 
+			<td colspan="2"><button id = {{item.scene_id}} >编辑</button> 
 		</tr>
 		{% endfor %}
 	</body>
