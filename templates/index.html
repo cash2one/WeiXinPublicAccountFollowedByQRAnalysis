@@ -7,7 +7,7 @@
 			$(document).ready(function(){
   				$("img").click(function(){
   					var ID = $(this).attr("id")
-  					var url = "http://162.243.152.178/manage/QR/option/?action=download&qid=" + ID
+  					var url = "/manage/QR/option/?action=download&qid=" + ID
   					 //$.get(url, function(data,status){});
   					 window.open(url)
   				});
@@ -17,13 +17,18 @@
 			$(document).ready(function(){
 				$("button").click(function(){
 					var ID = $(this).attr("id")
+					var remark = $(this).attr ("value")
 					var content = prompt("请修改备注", ID)
 					var before = ID
-					if(content == null || content == before){
-						//不做任何处理
+					if(content == null){
+						//点击取消按钮，不做任何处理
 					}else{
-						var url = "/manage/QR/option/?action=modify&qid=" + ID + "&remark=" + content
-						$.get(url, function(data,status){});
+						if(content == before){
+							//内容没有改变，不做处理
+						}else{
+							var url = "/manage/QR/option/?action=modify&qid=" + ID + "&remark=" + content
+							$.get(url, function(data,status){});
+						}
 					}
 				});
 			});
@@ -58,7 +63,7 @@
 		{% for item in data%}
 		<tr align=center>
 			<td>{{item.scene_id}}</td>
-			<td><img src={{item.pic}} id = {{item.scene_id}} width="200", height="200"/></td>
+			<td><img src={{item.pic}} id = {{item.scene_id}} value = {{item.remark}} width="200", height="200"/></td>
 			<td>永久性</td>
 			<td>{{item.count}}</td>
 			<td>{{item.remark}}</td>
