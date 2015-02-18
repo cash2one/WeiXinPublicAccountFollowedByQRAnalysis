@@ -109,7 +109,7 @@ def changeQRName(scene_id, remark):
     cursor = db.cursor()
     changed = cursor.execute("""update QR set remark = %s where scene_id = %s""", ((remark), str(scene_id),))
     if changed:
-        print 'QR which scene_id=%s remark changed to %s' % (scene_id, remark)
+        # print 'QR which scene_id=%s remark changed to %s' % (scene_id, remark)
         db.commit()
         cursor.close()
         db.close()
