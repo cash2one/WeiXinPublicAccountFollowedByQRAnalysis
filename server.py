@@ -233,7 +233,7 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
     for record in records:
         scene_id = record[0]
         follower = [i for i in follower_list if i["scene_id"] == scene_id]
-        print (record[1])
+        # print (record[1])
         # remark = unicode(urllib.unquote(str(record[1])), 'utf-8')  # 将url 编码转为 unicode 对象
         remark = (record[1])
         # print 'remark=' + remark
