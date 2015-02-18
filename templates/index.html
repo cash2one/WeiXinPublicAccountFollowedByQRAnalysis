@@ -7,9 +7,9 @@
 			$(document).ready(function(){
   				$("img").click(function(){
   					var ID = $(this).attr("id")
-  					var url = "/manage/QR/option?action=download&qid=" + ID
-  					 $.get(url, function(data,status){});
-
+  					var url = "http://162.243.152.178/manage/QR/option/?action=download&qid=" + ID
+  					 //$.get(url, function(data,status){});
+  					 window.open(url)
   				});
 			});
 		</script>
@@ -22,7 +22,7 @@
 					if(content == null || content == before){
 						//不做任何处理
 					}else{
-						var url = "/manage/QR/option?action=modify&qid=" + ID + "&remark=" + content
+						var url = "/manage/QR/option/?action=modify&qid=" + ID + "&remark=" + content
 						$.get(url, function(data,status){});
 					}
 				});
@@ -30,13 +30,13 @@
 		</script>
 	</head>
 
-	<form action = "/manage/QR/option" method = "get">
+	<form action = "/manage/QR/option/" method = "get">
     	<label>生成二维码的数量</label>
     	<input type="hidden" name="action" value="addQR" />
     	<input type = "text" name = "number"><br/>
     	<input type = "submit" value = "提交"><br/>
 	</form>
-	<form action = "/manage/QR/option" method = "get">
+	<form action = "/manage/QR/option/" method = "get">
     	<label>按起始时间搜索（格式：yyyy-mm-dd）</label>
     	<input type="hidden" name="action" value="search" />
     	<input type = "text" name = "timeA">
