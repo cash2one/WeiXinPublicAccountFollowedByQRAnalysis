@@ -78,6 +78,8 @@ def getQR():
     # QR = urllib.urlopen(url_to_get_QR).read()
     cursor.execute("""select now()""")
     date = cursor.fetchone()
+    print 'scene_id=%s,remark=%s,pic=%s,time=%s,web=%s' % (str(scene_id), str(scene_id), url_to_get_QR,
+                                                           date[0], url)
     # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
     cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
                                                                     date[0], url, encode_ticket ))
@@ -106,11 +108,13 @@ def changeQRName(scene_id, remark):
     cursor = db.cursor()
     changed = cursor.execute("""update QR set remark = %s where scene_id = %s""", (str(remark), str(scene_id),))
     if changed:
+        print 'QR which scene_id=%s remark changed to %s' % (scene_id, remark)
         db.commit()
         cursor.close()
         db.close()
         return True
     else:
+        print 'remark didn\'t changed'
         return False
 
 
@@ -137,12 +141,13 @@ def receiveQRFollowInfo(xml):
                 date = cursor.fetchone()
                 openID = message.source
                 ticket = message.ticket
-                print ticket
+                print "%s followed by %s in %s" % (str(openID), str(ticket), date[0])
                 # create table event(openID varchar(10),ticket text,time datetime,primary key (openID));
                 cursor.execute("""insert into event values(%s,%s,%s)""", (str(openID), str(ticket), date[0],))
                 db.commit()
                 cursor.close()
                 db.close()
+    print '不是二维码关注事件'
     return False
 
 
@@ -169,7 +174,7 @@ def followQuantityCheck(begin, end):
                                (str(begin), str(end), str(ticket),))
         # print ticket, count
         result.append({"scene_id": scene_id, "count": int(count)})
-    # print result
+    print result
     return result
 
 
@@ -183,10 +188,10 @@ def fraudQRFollowCheck(openID):
     cursor = db.cursor()
     followed = cursor.execute("""select * from event where openID = %s""", (str(openID),))
     if followed:
-        print 1
+        print openID + " has followed"
         return True
     else:
-        print 0
+        print openID + " hasn't followed"
         return False
 
 
@@ -198,10 +203,10 @@ def loginCheck(uid, psw):
     :return:合法为 True,否则 False
     """
     if uid == "smie2012" and psw == "123456":
-        print 1
+        print 'login successful'
         return True
     else:
-        print 0
+        print 'login error'
         return False
 
 
@@ -338,20 +343,22 @@ def option():
             changeQRName(scene_id, remark)
             print 'changed'
             return render_template("index.html", data=getDataToShow())
+            # return redirect(url_for("option"), code=302)
         else:  # 请求获取网页
             return render_template("index.html", data=getDataToShow())
 
 
 def main():
-    # QRRequest(10)
-    # changeQRName(16, "test")
-    # fraudQRFollowCheck("oF5fzsiRhz")
-    # followQuantityCheck("2015-02-11 09:16:16", "2015-12-16 09:16:16")
-    # loginCheck("smie2012", "123456")
-    getDataToShow()
+    # QRRequest(0)
+    # changeQRName(1, "t")
+    # fraudQRFollowCheck("")
+    # followQuantityCheck("0000-00-00 00:00:00", "9999-00-00 00:00:00")
+    # receiveQRFollowInfo()
+    loginCheck("", "")
+    # getDataToShow()
 
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
-    # app.run(port=8000)
+    # app.run(host='0.0.0.0', port=80)
+    app.run(port=8000)

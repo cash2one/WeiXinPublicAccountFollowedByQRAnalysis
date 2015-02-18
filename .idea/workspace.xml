@@ -27,8 +27,8 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6857143" vertical-offset="7544" max-vertical-offset="7964">
-              <caret line="356" column="5" selection-start-line="356" selection-start-column="5" selection-end-line="356" selection-end-column="5" />
+            <state vertical-scroll-proportion="-9.2" vertical-offset="5184" max-vertical-offset="8118">
+              <caret line="60" column="9" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
               <folding>
                 <element signature="e#44#66#0" expanded="true" />
               </folding>
@@ -338,7 +338,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="2" />
+      <option name="time" value="3" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -379,8 +379,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6857143" vertical-offset="7544" max-vertical-offset="7964">
-          <caret line="356" column="5" selection-start-line="356" selection-start-column="5" selection-end-line="356" selection-end-column="5" />
+        <state vertical-scroll-proportion="-9.2" vertical-offset="5184" max-vertical-offset="8118">
+          <caret line="60" column="9" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
           <folding>
             <element signature="e#44#66#0" expanded="true" />
           </folding>
