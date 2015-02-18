@@ -143,9 +143,6 @@ def receiveQRFollowInfo(xml):
                 db.commit()
                 cursor.close()
                 db.close()
-                return True
-            return False
-        return False
     return False
 
 
@@ -304,41 +301,45 @@ def option():
     """
     处理用户对二维码的增,改,查操作
     """
-    action = request.args.get("action", "none")
-    print action
-    if action == "addQR":  # 生成n个二维码
-        n = int(request.args.get("number", 0))
-        QRRequest(n)
-        return render_template("index.html", data=getDataToShow())
-    elif action == "search":  # 关注量只显示事件A,B之间的。
-        begin = str(request.args.get("timeA", DEFAULT_BEGIN))
-        end = str(request.args.get("timeB", DEFAULT_END))
-        if begin == '':  # 未输入 time 时当做DEFAULT_BEGIN处理
-            begin = DEFAULT_BEGIN
-        else:
-            begin = begin + " 00:00:00"
-        if end == '':
-            end = DEFAULT_END
-        else:
-            end = end + " 00:00:00"
-        return render_template("index.html", data=getDataToShow(begin, end))
-    elif action == "download":  # 下载id为xxx的二维码图片
-        scene_id = request.args.get("qid", 1)
-        db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
-        cursor = db.cursor()
-        cursor.execute("""select pic from QR where scene_id = %s""", (str(scene_id),))
-        record = cursor.fetchone()
-        pic_url = record[0]
-        return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + '.jpeg',
-                         as_attachment=True)
-        # return urllib.urlopen(pic_url).read()
-    elif action == "remark":  # 修改scene_id=i 的二维码备注
-        scene_id = request.args.get("qid", 1)
-        remark = request.args.get("remark", str(scene_id))
-        changeQRName(scene_id, remark)
-        return render_template("index.html", data=getDataToShow())
-    else:  # 请求获取网页
-        return render_template("index.html", data=getDataToShow())
+    if not loggedIn():
+        return redirect(url_for("login"))
+    else:
+        action = request.args.get("action", "none")
+        print action
+        if action == "addQR":  # 生成n个二维码
+            n = int(request.args.get("number", 0))
+            QRRequest(n)
+            return render_template("index.html", data=getDataToShow())
+        elif action == "search":  # 关注量只显示事件A,B之间的。
+            begin = str(request.args.get("timeA", DEFAULT_BEGIN))
+            end = str(request.args.get("timeB", DEFAULT_END))
+            if begin == '':  # 未输入 time 时当做DEFAULT_BEGIN处理
+                begin = DEFAULT_BEGIN
+            else:
+                begin = begin + " 00:00:00"
+            if end == '':
+                end = DEFAULT_END
+            else:
+                end = end + " 00:00:00"
+            return render_template("index.html", data=getDataToShow(begin, end))
+        elif action == "download":  # 下载id为xxx的二维码图片
+            scene_id = request.args.get("qid", 1)
+            db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
+            cursor = db.cursor()
+            cursor.execute("""select pic from QR where scene_id = %s""", (str(scene_id),))
+            record = cursor.fetchone()
+            pic_url = record[0]
+            return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + '.jpeg',
+                             as_attachment=True)
+            # return urllib.urlopen(pic_url).read()
+        elif action == "modify":  # 修改scene_id=i 的二维码备注
+            scene_id = request.args.get("qid", 1)
+            remark = request.args.get("remark", str(scene_id))
+            changeQRName(scene_id, remark)
+            print 'changed'
+            return render_template("index.html", data=getDataToShow())
+        else:  # 请求获取网页
+            return render_template("index.html", data=getDataToShow())
 
 
 def main():
