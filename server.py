@@ -6,7 +6,6 @@ import json
 import time
 import MySQLdb
 import io
-import base64
 from wechat_sdk import WechatBasic
 from wechat_sdk.messages import EventMessage
 from flask import Flask, request, redirect, url_for, render_template, make_response, send_file
@@ -67,8 +66,11 @@ def getQR():
     req = urllib2.Request(url_to_get_ticket, json.dumps(para))
     res = urllib2.urlopen(req)
     dict_res = json.loads(res.read())
-    ticket = dict_res["ticket"]
-    url = dict_res["url"]
+    try:
+        ticket = dict_res["ticket"]
+        url = dict_res["url"]
+    except:
+        print dict_res
     temp = {
         "ticket": ticket
     }
@@ -79,7 +81,7 @@ def getQR():
     # QR = urllib.urlopen(url_to_get_QR).read()
     cursor.execute("""select now()""")
     date = cursor.fetchone()
-    print 'scene_id=%s,remark=%s,pic=%s,time=%s,web=%s' % (str(scene_id), str(scene_id), url_to_get_QR,
+    print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
                                                            date[0], url)
     # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
     cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
@@ -109,13 +111,13 @@ def changeQRName(scene_id, remark):
     cursor = db.cursor()
     changed = cursor.execute("""update QR set remark = %s where scene_id = %s""", ((remark), str(scene_id),))
     if changed:
-        # print 'QR which scene_id=%s remark changed to %s' % (scene_id, remark)
+        # print "QR which scene_id=%s remark changed to %s" % (scene_id, remark)
         db.commit()
         cursor.close()
         db.close()
         return True
     else:
-        print 'remark didn\'t changed'
+        print "remark didn\"t changed"
         return False
 
 
@@ -148,7 +150,7 @@ def receiveQRFollowInfo(xml):
                 db.commit()
                 cursor.close()
                 db.close()
-    print '不是二维码关注事件'
+    print "不是二维码关注事件"
     return False
 
 
@@ -204,10 +206,10 @@ def loginCheck(uid, psw):
     :return:合法为 True,否则 False
     """
     if uid == "smie2012" and psw == "123456":
-        print 'login successful'
+        print "login successful"
         return True
     else:
-        print 'login error'
+        print "login error"
         return False
 
 
@@ -234,9 +236,9 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
         scene_id = record[0]
         follower = [i for i in follower_list if i["scene_id"] == scene_id]
         # print (record[1])
-        # remark = unicode(urllib.unquote(str(record[1])), 'utf-8')  # 将url 编码转为 unicode 对象
+        # remark = unicode(urllib.unquote(str(record[1])), "utf-8")  # 将url 编码转为 unicode 对象
         remark = (record[1])
-        # print 'remark=' + remark
+        # print "remark=" + remark
         item = {
             "scene_id": int(scene_id),
             "pic": str(record[2]),
@@ -318,7 +320,7 @@ def option():
         print action
         if action == "addQR":  # 生成n个二维码
             n = request.args.get("number", 0)
-            if n == '':
+            if n == "":
                 n = 0
             else:
                 n = int(n)
@@ -327,11 +329,11 @@ def option():
         elif action == "search":  # 关注量只显示事件A,B之间的。
             begin = str(request.args.get("timeA", DEFAULT_BEGIN))
             end = str(request.args.get("timeB", DEFAULT_END))
-            if begin == '':  # 未输入 time 时当做DEFAULT_BEGIN处理
+            if begin == "":  # 未输入 time 时当做DEFAULT_BEGIN处理
                 begin = DEFAULT_BEGIN
             else:
                 begin = begin + " 00:00:00"
-            if end == '':
+            if end == "":
                 end = DEFAULT_END
             else:
                 end = end + " 00:00:00"
@@ -343,17 +345,17 @@ def option():
             cursor.execute("""select pic from QR where scene_id = %s""", (str(scene_id),))
             record = cursor.fetchone()
             pic_url = record[0]
-            return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + '.jpeg',
+            return send_file(io.BytesIO(urllib.urlopen(pic_url).read()), attachment_filename=str(scene_id) + ".jpeg",
                              as_attachment=True)
             # return urllib.urlopen(pic_url).read()
         elif action == "modify":  # 修改scene_id=i 的二维码备注
             scene_id = request.args.get("qid", 1)
             remark = request.args.get("remark", str(scene_id))
-            # print 'encode='+encode_remark
-            # remark = unicode((encode_remark), 'utf-8')  # 将url 编码转为 unicode 对象
+            # print "encode="+encode_remark
+            # remark = unicode((encode_remark), "utf-8")  # 将url 编码转为 unicode 对象
             # print remark
             changeQRName(scene_id, remark)
-            print 'changed'
+            print "changed"
             return render_template("index.html", data=getDataToShow())
             # return redirect(url_for("option"), code=302)
         else:  # 请求获取网页
@@ -372,5 +374,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host='0.0.0.0', port=80)
-    # app.run(port=8000)
+    # app.run(host="0.0.0.0", port=80)
+    app.run(port=8000)
