@@ -13,6 +13,8 @@ from flask import Flask, request, redirect, url_for, render_template, make_respo
 app = Flask(__name__)
 app.debug = True
 
+APPID = "wx1e7e366133874e70"
+SECRET = "ace70e4b8df4ad339fd9862d6b429207"
 access_token = ""
 valid_time = 0  # accsee_token 剩余有效时间
 SESSION_TIMEOUT = 60 * 30
@@ -26,17 +28,15 @@ def getAccessToken():
     获取 access token
     :return:access token
     """
+    global APPID, SECRET, access_token, valid_time  # valid_time is the time when access_token is valid
     URL = "https://api.weixin.qq.com/cgi-bin/token"
-    appid = "wx1e7e366133874e70"
-    secret = "ace70e4b8df4ad339fd9862d6b429207"
     data = {
         "grant_type": "client_credential",
-        "appid": appid,
-        "secret": secret
+        "appid": APPID,
+        "secret": SECRET
     }
     para = urllib.urlencode(data)
     res = json.loads(urllib2.urlopen(URL + "?" + para).read())
-    global access_token, valid_time  # valid_time is the time when access_token is valid
     access_token = res["access_token"]
     expires_in = res["expires_in"]
     valid_time = time.time() + expires_in * 3000.0
