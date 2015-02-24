@@ -2,7 +2,9 @@
 	<head>
 		<title>二维码信息</title>
 		<meta charset="utf-8" />
-		<script type="text/javascript" src="/static/jquery-1.11.2.min.js"></script>
+		<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" media="screen">
+    <script type="text/javascript" src="/static/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function(){
   				$("img").click(function(){
@@ -17,19 +19,23 @@
 			$(document).ready(function(){
 				$("button").click(function(){
 					var ID = $(this).attr("id")
-					var content = prompt("请修改备注")
-					var before = ID
-					if(content == null){
-						//点击取消按钮，不做任何处理
-					}else{
-						var contentEncode = EncodeUtf8(content)
-						var url = "/manage/QR/option/?action=modify&qid=" + ID + "&remark=" + contentEncode
-						var optionURL = "/manage/QR/option"
-						$.get(url, function(data,status){});
-						window.location.replace(optionURL)
-					}
+          if(ID == "heihei" || ID == "haha"){
+
+          }else{
+              var content = prompt("请输入备注信息：", "")
+              if(content==null){
+
+              }else{
+                var contentEncode = EncodeUtf8(content)
+                var url = "/manage/QR/option/?action=modify&qid=" + ID + "&remark=" + contentEncode
+                var optionURL = "/manage/QR/option"
+                $.get(url, function(data,status){});
+                window.location.replace(optionURL) 
+            }
+          }
 				});
 			});
+
 		</script>
 		<script type="text/javascript">
 		//字符转换为UTF-8编码
@@ -126,44 +132,197 @@ function Hex2Utf8(s)
          return retS;
      }
      return "";
-}	</script>
+}	
+     function BYYYYMMDDstart()   
+   {   
+           MonHead = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];   
+    
+           //先给年下拉框赋内容   
+           var y  = new Date().getFullYear();   
+           for (var i = (y-30); i < (y+30); i++) //以今年为准，前30年，后30年   
+                   document.reg_testdate.BYYYY.options.add(new Option(" "+ i +" 年", i));   
+    
+           //赋月份的下拉框   
+           for (var i = 1; i < 13; i++)   
+                   document.reg_testdate.BMM.options.add(new Option(" " + i + " 月", i));   
+    
+           document.reg_testdate.BYYYY.value = y;   
+           document.reg_testdate.BMM.value = new Date().getMonth() + 1;   
+           var n = MonHead[new Date().getMonth()];   
+           if (new Date().getMonth() ==1 && IsPinYear(BYYYYvalue)) n++;   
+                writeBDay(n); //赋日期下拉框Author:meizz   
+           document.reg_testdate.BDD.value = new Date().getDate();   
+   }   
+        function EYYYYMMDDstart()   
+   {   
+           MonHead = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];   
+    
+           //先给年下拉框赋内容   
+           var y  = new Date().getFullYear();   
+           for (var i = (y-30); i < (y+30); i++) //以今年为准，前30年，后30年   
+                   document.reg_testdate.EYYYY.options.add(new Option(" "+ i +" 年", i));   
+    
+           //赋月份的下拉框   
+           for (var i = 1; i < 13; i++)   
+                   document.reg_testdate.EMM.options.add(new Option(" " + i + " 月", i));   
+    
+           document.reg_testdate.EYYYY.value = y;   
+           document.reg_testdate.EMM.value = new Date().getMonth() + 1;   
+           var n = MonHead[new Date().getMonth()];   
+           if (new Date().getMonth() ==1 && IsPinYear(EYYYYvalue)) n++;   
+                writeEDay(n); //赋日期下拉框Author:meizz   
+           document.reg_testdate.EDD.value = new Date().getDate();   
+   } 
+   if(document.attachEvent)   
+       window.attachEvent("onload", BYYYYMMDDstart);   
+   else   
+       window.addEventListener('load', BYYYYMMDDstart, false); 
+   if(document.attachEvent)   
+       window.attachEvent("onload", EYYYYMMDDstart);   
+   else   
+       window.addEventListener('load', EYYYYMMDDstart, false);  
+   function BYYYYDD(str) //年发生变化时日期发生变化(主要是判断闰平年)   
+   {   
+           var BMMvalue = document.reg_testdate.BMM.options[document.reg_testdate.BMM.selectedIndex].value;   
+           if (BMMvalue == ""){ var e = document.reg_testdate.BDD; optionsClear(e); return;}   
+           var n = MonHead[BMMvalue - 1];   
+           if (BMMvalue ==2 && IsPinYear(str)) n++;   
+                writeBDay(n)   
+   }   
+   function EYYYYDD(str) //年发生变化时日期发生变化(主要是判断闰平年)   
+   {   
+           var EMMvalue = document.reg_testdate.EMM.options[document.reg_testdate.EMM.selectedIndex].value;   
+           if (EMMvalue == ""){ var e = document.reg_testdate.EDD; optionsClear(e); return;}   
+           var n = MonHead[EMMvalue - 1];   
+           if (EMMvalue ==2 && IsPinYear(str)) n++;   
+                writeEDay(n)   
+   }
+   function BMMDD(str)   //月发生变化时日期联动   
+   {   
+        var BYYYYvalue = document.reg_testdate.BYYYY.options[document.reg_testdate.BYYYY.selectedIndex].value;   
+        if (BYYYYvalue == ""){ var e = document.reg_testdate.BDD; optionsClear(e); return;}   
+        var n = MonHead[str - 1];   
+        if (str ==2 && IsPinYear(BYYYYvalue)) n++;   
+          writeBDay(n)   
+   }
+   function EMMDD(str)   //月发生变化时日期联动   
+   {   
+        var EYYYYvalue = document.reg_testdate.EYYYY.options[document.reg_testdate.EYYYY.selectedIndex].value;   
+        if (EYYYYvalue == ""){ var e = document.reg_testdate.EDD; optionsClear(e); return;}   
+        var n = MonHead[str - 1];   
+        if (str ==2 && IsPinYear(EYYYYvalue)) n++;   
+          writeEDay(n)   
+   }    
+   function writeBDay(n)   //据条件写日期的下拉框   
+   {   
+           var e = document.reg_testdate.BDD; 
+           optionsClear(e);   
+           for (var i=1; i<(n+1); i++)   
+                e.options.add(new Option(" "+ i + " 日", i));   
+   }
+   function writeEDay(n)   //据条件写日期的下拉框   
+   {   
+           var e = document.reg_testdate.EDD; 
+           optionsClear(e);   
+           for (var i=1; i<(n+1); i++)   
+                e.options.add(new Option(" "+ i + " 日", i));   
+   }    
+   function IsPinYear(year)//判断是否闰平年   
+   {     return(0 == year%4 && (year%100 !=0 || year%400 == 0));}   
+   function optionsClear(e)   
+   {   
+        e.options.length = 1;   
+   }
+  </script>
 	</head>
-
-	<form action = "/manage/QR/option/" method = "get">
-    	<label>生成二维码的数量</label>
-    	<input type="hidden" name="action" value="addQR" />
-    	<input type = "text" name = "number"><br/>
-    	<input type = "submit" value = "提交"><br/>
-	</form>
-	<form action = "/manage/QR/option/" method = "get">
-    	<label>按起始时间搜索（格式：yyyy-mm-dd）</label>
-    	<input type="hidden" name="action" value="search" />
-    	<input type = "text" name = "timeA">
-    	<tag>-</tag>
-    	<input type = "text" name = "timeB"><br/>
-    	<input type = "submit" value = "搜索"><br/>
-	</form>a
+  <div class="container">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h1 class="text-center">生成二维码</h1>
+        </div>
+        <div class="panel-body">
+	       <form action = "/manage/QR/option/" method = "get">
+          <center>
+    	     <label>生成二维码的数量：</label>
+    	     <input type="hidden" name="action" value="addQR" />
+    	     <input type = "text" name = "number"><br/>
+           <button id="haha" type="submit" class="btn btn-primary">提交</button>
+          </center>
+	       </form>
+        </div>
+      </div>
+  </div>
+    <div class="container">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h1 class="text-center">查询关注数量</h1>
+        </div>
+        <div class="panel-body">
+	       <form name="reg_testdate" action = "/manage/QR/option/" method = "get">
+          <center>
+    	     <label>起始时间（格式：yyyy-mm-dd）：</label>
+           <input type="hidden" name="action" value="search" />
+             <select name="BYYYY" onchange="BYYYYDD(this.value)">
+              <option value="">请选择 年</option>
+             </select>
+             <tag>-</tag>
+             <select name="BMM" onchange="BMMDD(this.value)">
+              <option value="">选择 月</option>
+             </select>
+             <tag>-</tag>
+             <select name="BDD">
+              <option value="">选择 日</option>
+             </select>
+             <br>
+             <label>截止时间（格式：yyyy-mm-dd）：</label>
+             <select name="EYYYY" onchange="EYYYYDD(this.value)">
+              <option value="">请选择 年</option>
+             </select>
+             <tag>-</tag>
+             <select name="EMM" onchange="EMMDD(this.value)">
+              <option value="">选择 月</option>
+             </select>
+             <tag>-</tag>
+             <select name="EDD">
+              <option value="">选择 日</option>
+             </select>
+             <br>
+    	     <button id = "heihei" type="submit" class="btn btn-primary">提交</button>
+          </center>
+	       </form>
+         </div>
+      </div>
+    </div>
 	<body>
-		<table border="1" align=cener>
-		<tr align=center>
-			<th>二维码ID</th>
-			<th>二维码图片（可点击下载）</th>
-			<th>二维码性质</th>
-			<th>关注数量</th>
-			<th>二维码备注</th>
-			<th>二维码生成时间</th>
-			<th>修改</th>
-		</tr>
-		{% for item in data%}
-		<tr align=center>
-			<td>{{item.scene_id}}</td>
-			<td><img src={{item.pic}} id = {{item.scene_id}} width="200", height="200"/></td>
-			<td>永久性</td>
-			<td>{{item.count}}</td>
-			<td>{{item.remark}}</td>
-			<td>{{item.time}}</td>
-			<td colspan="2"><button id = {{item.scene_id}} >编辑</button> 
-		</tr>
-		{% endfor %}
+    <div class="container">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <h1 class="text-center">二维码详细信息</h1>
+        </div>
+        <div class="panel-body">
+		      <table border="1" align=center>
+		        <tr align=center>
+			       <th style="text-align:center">二维码ID</th>
+			       <th style="text-align:center">二维码图片（可点击下载）</th>
+			       <th style="text-align:center">二维码性质</th>
+			       <th style="text-align:center">关注数量</th>
+			       <th style="text-align:center">二维码备注</th>
+			       <th style="text-align:center">二维码生成时间</th>
+			       <th style="text-align:center">修改</th>
+		        </tr>
+		        {% for item in data%}
+		        <tr align=center>
+			       <td>{{item.scene_id}}</td>
+			       <td style="text-align:center"><img src={{item.pic}} id = {{item.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
+			       <td style="text-align:center">永久性</td>
+			       <td style="text-align:center">{{item.count}}</td>
+			       <td style="text-align:center">{{item.remark}}</td>
+			       <td style="text-align:center">{{item.time}}</td>
+			       <td colspan="2"><button id = {{item.scene_id}} class = "btn-info">编辑</button>
+		        </tr>
+		        {% endfor %}
+        </div>
+      </div>
+    </div>
 	</body>
 </html>

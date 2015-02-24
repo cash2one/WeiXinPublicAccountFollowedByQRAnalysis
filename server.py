@@ -327,8 +327,14 @@ def option():
             QRRequest(n)
             return render_template("index.html", data=getDataToShow())
         elif action == "search":  # 关注量只显示事件A,B之间的。
-            begin = str(request.args.get("timeA", DEFAULT_BEGIN))
-            end = str(request.args.get("timeB", DEFAULT_END))
+            begin_year = str(request.args.get("BYYYY", DEFAULT_BEGIN))
+            begin_month = str(request.args.get("BMM", DEFAULT_BEGIN))
+            begin_day = str(request.args.get("BDD", DEFAULT_BEGIN))
+            end_year = str(request.args.get("EYYYY", DEFAULT_BEGIN))
+            end_month = str(request.args.get("EMM", DEFAULT_BEGIN))
+            end_day = str(request.args.get("EDD", DEFAULT_BEGIN))
+            begin = begin_year + "-" + begin_month + "-" + begin_day + " 00:00:00"
+            end = end_year + "-" + end_month + "-" + end_day + " 23:59:59"
             if begin == "":  # 未输入 time 时当做DEFAULT_BEGIN处理
                 begin = DEFAULT_BEGIN
             else:
