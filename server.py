@@ -69,23 +69,23 @@ def getQR():
     try:
         ticket = dict_res["ticket"]
         url = dict_res["url"]
+        temp = {
+            "ticket": ticket
+        }
+        encode_ticket = urllib.urlencode(temp).split("ticket=")[1]
+        # print encode_ticket
+        url_to_get_QR = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encode_ticket
+        # print url_to_get_QR
+        # QR = urllib.urlopen(url_to_get_QR).read()
+        cursor.execute("""select now()""")
+        date = cursor.fetchone()
+        print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
+                                                               date[0], url)
+        # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
+        cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
+                                                                        date[0], url, encode_ticket ))
     except:
         print dict_res
-    temp = {
-        "ticket": ticket
-    }
-    encode_ticket = urllib.urlencode(temp).split("ticket=")[1]
-    # print encode_ticket
-    url_to_get_QR = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encode_ticket
-    # print url_to_get_QR
-    # QR = urllib.urlopen(url_to_get_QR).read()
-    cursor.execute("""select now()""")
-    date = cursor.fetchone()
-    print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
-                                                           date[0], url)
-    # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
-    cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
-                                                                    date[0], url, encode_ticket ))
     db.commit()
     cursor.close()
     db.close()
