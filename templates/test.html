@@ -268,12 +268,12 @@ function SetString(str)
             <th style="text-align:center">二维码备注</th>
             <th style="text-align:center">二维码关注数</th>
           </tr>
-          {% for a in data%}
+          {% for data_dict in data%}
           <tr align=center>
-            <td style="text-align:center">{{a.info.scene_id}}</td>
-            <td style="text-align:center"><img src={{a.info.pic}} id = {{a.info.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
-            <td style="text-align:center">{{a.info.remark}}</td>
-            <td style="text-align:center">{{a.info.count}}</td>
+            <td style="text-align:center">{{data_dict.info.scene_id}}</td>
+            <td style="text-align:center"><img src={{data_dict.info.pic}} id = {{data_dict.info.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
+            <td style="text-align:center">{{data_dict.info.remark}}</td>
+            <td style="text-align:center">{{data_dict.info.count}}</td>
           </tr>
         </table>
 			</div>
@@ -328,7 +328,7 @@ function SetString(str)
             <th style="text-align:center">时间</th>
             <th style="text-align:center">新关注人数</th>
           </tr>
-        {% for item in a.hold%}
+        {% for item in data_dict.hold%}
           <tr align=center>
             <td style="text-align:center">{{item.date}}</td>
             <td style="text-align:center">{{item.num}}</td>

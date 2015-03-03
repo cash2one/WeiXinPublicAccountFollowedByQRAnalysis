@@ -259,13 +259,14 @@ def getOneDataToShow(scene_id=1):
     :param scene_id: 该二维码的scene_id
     :return: dict,有一个字典item,一个字典数组hold,item内容有scene_id,图片的链接pic,二维码的备注remark,二维码的总的关注数count,hold里面的每一项有两个成员,第一个是date,代表关注的时间,第二个是num,代表今天关注的数量
     """
-    data = {}
+    data_dict = {}
     temp_data = getDataToShow()
     for item in temp_data:
         if item["scene_id"] == scene_id:
-            data["info"] = item
+            data_dict["info"] = item
             break
-    begin_str = data["info"]["time"]  # 最早有人关注的时间为二维码的创建时间
+    begin_str = data_dict["info"]["time"]  # 最早有人关注的时间为二维码的创建时间
+    print begin_str
     begin = datetime.datetime.strptime(begin_str, '%Y-%m-%d %H:%M:%S')
     begin.replace(hour=0, minute=0, second=0)
     end = datetime.datetime.today()
@@ -283,11 +284,10 @@ def getOneDataToShow(scene_id=1):
             item = {"date": begin_temp, "num": count}
             hold.append(item)
         begin = next_day
-    data["hold"] = hold
-    data_list = []
-    data_list.append(data)
-    print data_list
-    return data_list
+    data_dict["hold"] = hold
+    data = []
+    data.append(data_dict)
+    return data
 
 
 # pages
@@ -420,6 +420,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    app.run(host="0.0.0.0", port=80)
+    main()
+    # app.run(host="0.0.0.0", port=80)
     # app.run(port=8000)
