@@ -284,8 +284,10 @@ def getOneDataToShow(scene_id=1):
             hold.append(item)
         begin = next_day
     data["hold"] = hold
-    print data
-    return data
+    data_list = []
+    data_list.append(data)
+    print data_list
+    return data_list
 
 
 # pages
@@ -418,6 +420,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    app.run(host="0.0.0.0", port=80)
+    main()
+    # app.run(host="0.0.0.0", port=80)
     # app.run(port=8000)
