@@ -1,0 +1,343 @@
+<html lang="zh-CH" style="overflow-y: visible;">
+ <head>
+ 	<title>二维码详情</title>
+	<meta charset="utf-8" />
+	<link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="/static/js/jquery-1.11.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+     function BYYYYMMDDstart()   
+   {   
+           MonHead = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];   
+    
+           //先给年下拉框赋内容   
+           var y  = new Date().getFullYear();   
+           for (var i = (y-30); i < (y+30); i++) //以今年为准，前30年，后30年   
+                   document.reg_testdate.BYYYY.options.add(new Option(" "+ i +" 年", i));   
+    
+           //赋月份的下拉框   
+           for (var i = 1; i < 13; i++)   
+                   document.reg_testdate.BMM.options.add(new Option(" " + i + " 月", i));   
+    
+           document.reg_testdate.BYYYY.value = y;   
+           document.reg_testdate.BMM.value = new Date().getMonth() + 1;   
+           var n = MonHead[new Date().getMonth()];   
+           if (new Date().getMonth() ==1 && IsPinYear(BYYYYvalue)) n++;   
+                writeBDay(n); //赋日期下拉框Author:meizz   
+           document.reg_testdate.BDD.value = new Date().getDate();   
+   }   
+        function EYYYYMMDDstart()   
+   {   
+           MonHead = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];   
+    
+           //先给年下拉框赋内容   
+           var y  = new Date().getFullYear();   
+           for (var i = (y-30); i < (y+30); i++) //以今年为准，前30年，后30年   
+                   document.reg_testdate.EYYYY.options.add(new Option(" "+ i +" 年", i));   
+    
+           //赋月份的下拉框   
+           for (var i = 1; i < 13; i++)   
+                   document.reg_testdate.EMM.options.add(new Option(" " + i + " 月", i));   
+    
+           document.reg_testdate.EYYYY.value = y;   
+           document.reg_testdate.EMM.value = new Date().getMonth() + 1;   
+           var n = MonHead[new Date().getMonth()];   
+           if (new Date().getMonth() ==1 && IsPinYear(EYYYYvalue)) n++;   
+                writeEDay(n); //赋日期下拉框Author:meizz   
+           document.reg_testdate.EDD.value = new Date().getDate();   
+   } 
+   if(document.attachEvent)   
+       window.attachEvent("onload", BYYYYMMDDstart);   
+   else   
+       window.addEventListener('load', BYYYYMMDDstart, false); 
+   if(document.attachEvent)   
+       window.attachEvent("onload", EYYYYMMDDstart);   
+   else   
+       window.addEventListener('load', EYYYYMMDDstart, false);  
+   function BYYYYDD(str) //年发生变化时日期发生变化(主要是判断闰平年)   
+   {   
+           var BMMvalue = document.reg_testdate.BMM.options[document.reg_testdate.BMM.selectedIndex].value;   
+           if (BMMvalue == ""){ var e = document.reg_testdate.BDD; optionsClear(e); return;}   
+           var n = MonHead[BMMvalue - 1];   
+           if (BMMvalue ==2 && IsPinYear(str)) n++;   
+                writeBDay(n)   
+   }   
+   function EYYYYDD(str) //年发生变化时日期发生变化(主要是判断闰平年)   
+   {   
+           var EMMvalue = document.reg_testdate.EMM.options[document.reg_testdate.EMM.selectedIndex].value;   
+           if (EMMvalue == ""){ var e = document.reg_testdate.EDD; optionsClear(e); return;}   
+           var n = MonHead[EMMvalue - 1];   
+           if (EMMvalue ==2 && IsPinYear(str)) n++;   
+                writeEDay(n)   
+   }
+   function BMMDD(str)   //月发生变化时日期联动   
+   {   
+        var BYYYYvalue = document.reg_testdate.BYYYY.options[document.reg_testdate.BYYYY.selectedIndex].value;   
+        if (BYYYYvalue == ""){ var e = document.reg_testdate.BDD; optionsClear(e); return;}   
+        var n = MonHead[str - 1];   
+        if (str ==2 && IsPinYear(BYYYYvalue)) n++;   
+          writeBDay(n)   
+   }
+   function EMMDD(str)   //月发生变化时日期联动   
+   {   
+        var EYYYYvalue = document.reg_testdate.EYYYY.options[document.reg_testdate.EYYYY.selectedIndex].value;   
+        if (EYYYYvalue == ""){ var e = document.reg_testdate.EDD; optionsClear(e); return;}   
+        var n = MonHead[str - 1];   
+        if (str ==2 && IsPinYear(EYYYYvalue)) n++;   
+          writeEDay(n)   
+   }    
+   function writeBDay(n)   //据条件写日期的下拉框   
+   {   
+           var e = document.reg_testdate.BDD; 
+           optionsClear(e);   
+           for (var i=1; i<(n+1); i++)   
+                e.options.add(new Option(" "+ i + " 日", i));   
+   }
+   function writeEDay(n)   //据条件写日期的下拉框   
+   {   
+           var e = document.reg_testdate.EDD; 
+           optionsClear(e);   
+           for (var i=1; i<(n+1); i++)   
+                e.options.add(new Option(" "+ i + " 日", i));   
+   }    
+   function IsPinYear(year)//判断是否闰平年   
+   {     return(0 == year%4 && (year%100 !=0 || year%400 == 0));}   
+   function optionsClear(e)   
+   {   
+        e.options.length = 1;   
+   }
+  </script>
+        <script type="text/javascript">
+      $(document).ready(function(){
+            
+            $("button").click(function(){
+                var ss = "1234567"
+                alert(ss.substring(ss.length-1, ss.length))
+          });
+      });
+    </script>
+    <script type="text/javascript">
+
+      function EncodeUtf8(s1)
+{
+      var s = escape(s1);
+      var sa = s.split("%");
+      var retV ="";
+      if(sa[0] != "")
+      {
+         retV = sa[0];
+      }
+      for(var i = 1; i < sa.length; i ++)
+      {
+           if(sa[i].substring(0,1) == "u")
+           {
+               retV += Hex2Utf8(Str2Hex(sa[i].substring(1,5)));
+              
+           }
+           else retV += "%" + sa[i];
+      }
+     
+      return retV;
+}
+function Str2Hex(s)
+{
+      var c = "";
+      var n;
+      var ss = "0123456789ABCDEF";
+      var digS = "";
+      for(var i = 0; i < s.length; i ++)
+      {
+         c = s.charAt(i);
+         n = ss.indexOf(c);
+         digS += Dec2Dig(eval(n));
+          
+      }
+      //return value;
+      return digS;
+}
+function Dec2Dig(n1)
+{
+      var s = "";
+      var n2 = 0;
+      for(var i = 0; i < 4; i++)
+      {
+         n2 = Math.pow(2,3 - i);
+         if(n1 >= n2)
+         {
+            s += '1';
+            n1 = n1 - n2;
+          }
+         else
+          s += '0';
+         
+      }
+      return s;
+     
+}
+function Dig2Dec(s)
+{
+      var retV = 0;
+      if(s.length == 4)
+      {
+          for(var i = 0; i < 4; i ++)
+          {
+              retV += eval(s.charAt(i)) * Math.pow(2, 3 - i);
+          }
+          return retV;
+      }
+      return -1;
+}
+function Hex2Utf8(s)
+{
+     var retS = "";
+     var tempS = "";
+     var ss = "";
+     if(s.length == 16)
+     {
+         tempS = "1110" + s.substring(0, 4);
+         tempS += "10" + s.substring(4, 10);
+         tempS += "10" + s.substring(10,16);
+         var sss = "0123456789ABCDEF";
+         for(var i = 0; i < 3; i ++)
+         {
+            retS += "%";
+            ss = tempS.substring(i * 8, (eval(i)+1)*8);
+           
+           
+           
+            retS += sss.charAt(Dig2Dec(ss.substring(0,4)));
+            retS += sss.charAt(Dig2Dec(ss.substring(4,8)));
+         }
+         return retS;
+     }
+     return "";
+} 
+function SetString(str)
+ {
+  var strlen = 0; 
+  var s = "";
+  var begin = -1
+  var end = -1
+  var newSTR = ""
+  console.warn(str)
+  for(var i = 0;i < str.length;i++)
+  {
+   if(str.charCodeAt(i) > 128){//中文字符
+    console.warn("扫描到中文字符")
+    if(begin == -1){  //第一次扫描到中文字符
+      begin = i     
+    }
+    if(i == str.length-1 && begin != -1){  //之前扫描到中文字符
+      end = i + 1
+      var chContent = str.substring(begin, end)
+      var encodeContent = EncodeUtf8(chContent)
+      newSTR = newSTR + encodeContent
+    }
+    strlen += 2;
+   }else{ //英文字符
+    console.warn("扫描到非中文字符")
+    if(begin == -1){   //之前没有扫描到中文字符
+
+    }else{           //之前扫描到连续的中文字符
+      end = i;
+      var chContent = str.substring(begin, end)
+      var encodeContent = EncodeUtf8(chContent)
+      newSTR = newSTR + encodeContent
+      begin = -1
+      end = -1
+    }
+    newSTR = newSTR + str.charAt(i)
+   }
+   
+  }
+ return newSTR;
+ }
+    </script>
+  </head>
+  <body>
+  	<div class="container">
+  		<div class="panel panel-info">
+  			<div class="panel-heading">
+  				<h1 class="text-center">二维码信息</h1>
+  			</div>
+  			<div class="panel-body">
+        <table border="1" align=center>
+          <tr align=center>
+            <th style="text-align:center">二维码ID</th>
+            <th style="text-align:center">二维码图片</th>
+            <th style="text-align:center">二维码备注</th>
+            <th style="text-align:center">二维码关注数</th>
+          </tr>
+          {% for a in data%}
+          <tr align=center>
+            <td style="text-align:center">{{a.info.scene_id}}</td>
+            <td style="text-align:center"><img src={{a.info.pic}} id = {{a.info.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
+            <td style="text-align:center">{{a.info.remark}}</td>
+            <td style="text-align:center">{{a.info.count}}</td>
+          </tr>
+        </table>
+			</div>
+		</div>
+	</div>
+  <div class="container">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <h1 class="text-center">搜索关注数目</h1><br>
+      </div>
+      <div class="panel-body">
+        <form name="reg_testdate" action = "/manage/QR/option/" method = "get">
+          <center>
+           <label>起始时间（格式：yyyy-mm-dd）：</label>
+           <input type="hidden" name="action" value="search" />
+             <select name="BYYYY" onchange="BYYYYDD(this.value)">
+              <option value="">请选择 年</option>
+             </select>
+             <tag>-</tag>
+             <select name="BMM" onchange="BMMDD(this.value)">
+              <option value="">选择 月</option>
+             </select>
+             <tag>-</tag>
+             <select name="BDD">
+              <option value="">选择 日</option>
+             </select>
+             <br>
+             <label>截止时间（格式：yyyy-mm-dd）：</label>
+             <select name="EYYYY" onchange="EYYYYDD(this.value)">
+              <option value="">请选择 年</option>
+             </select>
+             <tag>-</tag>
+             <select name="EMM" onchange="EMMDD(this.value)">
+              <option value="">选择 月</option>
+             </select>
+             <tag>-</tag>
+             <select name="EDD">
+              <option value="">选择 日</option>
+             </select>
+             <br>
+           <button id = "heihei" type="submit" class="btn btn-primary">提交</button>
+          </center>
+         </form>
+      </div>
+      <div class="panel-heading">
+        <h1 class="text-center">关注数明细</h1>
+        <h3 class="text-center">(注：默认显示从0000-00-00至9999-00-00的非0记录)</h3>
+      </div>
+      <div class="panel-body">
+        <table border="1" align=center>
+          <tr align=center>
+            <th style="text-align:center">时间</th>
+            <th style="text-align:center">新关注人数</th>
+          </tr>
+        {% for item in a.hold%}
+          <tr align=center>
+            <td style="text-align:center">{{item.date}}</td>
+            <td style="text-align:center">{{item.num}}</td>
+          </tr>
+        {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+ 
+   </body>
+</html>

@@ -3,7 +3,7 @@
 
 import urllib, urllib2
 import json
-import time
+import time, datetime
 import MySQLdb
 import io
 from wechat_sdk import WechatBasic
@@ -13,8 +13,6 @@ from flask import Flask, request, redirect, url_for, render_template, make_respo
 app = Flask(__name__)
 app.debug = True
 
-APPID = "wx1e7e366133874e70"
-SECRET = "ace70e4b8df4ad339fd9862d6b429207"
 access_token = ""
 valid_time = 0  # accsee_token 剩余有效时间
 SESSION_TIMEOUT = 60 * 30
@@ -28,7 +26,9 @@ def getAccessToken():
     获取 access token
     :return:access token
     """
-    global APPID, SECRET, access_token, valid_time  # valid_time is the time when access_token is valid
+    APPID = "wx1e7e366133874e70"
+    SECRET = "ace70e4b8df4ad339fd9862d6b429207"
+    global access_token, valid_time  # valid_time is the time when access_token is valid
     URL = "https://api.weixin.qq.com/cgi-bin/token"
     data = {
         "grant_type": "client_credential",
@@ -39,7 +39,8 @@ def getAccessToken():
     res = json.loads(urllib2.urlopen(URL + "?" + para).read())
     access_token = res["access_token"]
     expires_in = res["expires_in"]
-    valid_time = time.time() + expires_in * 3000.0
+    print access_token, expires_in
+    valid_time = time.time() + expires_in / 2  # expires_in为有效的时间,单位s
 
 
 def getQR():
@@ -66,26 +67,25 @@ def getQR():
     req = urllib2.Request(url_to_get_ticket, json.dumps(para))
     res = urllib2.urlopen(req)
     dict_res = json.loads(res.read())
-    try:
-        ticket = dict_res["ticket"]
-        url = dict_res["url"]
-        temp = {
-            "ticket": ticket
-        }
-        encode_ticket = urllib.urlencode(temp).split("ticket=")[1]
-        # print encode_ticket
-        url_to_get_QR = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encode_ticket
-        # print url_to_get_QR
-        # QR = urllib.urlopen(url_to_get_QR).read()
-        cursor.execute("""select now()""")
-        date = cursor.fetchone()
-        print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
-                                                               date[0], url)
-        # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
-        cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
-                                                                        date[0], url, encode_ticket ))
-    except:
-        print dict_res
+    ticket = dict_res["ticket"]
+    url = dict_res["url"]
+    temp = {
+        "ticket": ticket
+    }
+    encode_ticket = urllib.urlencode(temp).split("ticket=")[1]
+    # print encode_ticket
+    url_to_get_QR = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encode_ticket
+    # print url_to_get_QR
+    # QR = urllib.urlopen(url_to_get_QR).read()
+    cursor.execute("""select now()""")
+    date = cursor.fetchone()
+    print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
+                                                           date[0], url)
+    # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
+    cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
+                                                                    date[0], url, encode_ticket ))
+
+    print dict_res
     db.commit()
     cursor.close()
     db.close()
@@ -177,7 +177,7 @@ def followQuantityCheck(begin, end):
                                (str(begin), str(end), str(ticket),))
         # print ticket, count
         result.append({"scene_id": scene_id, "count": int(count)})
-    print result
+    # print result
     return result
 
 
@@ -250,6 +250,41 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
         data.append(item)
         # for item in data:
         # print item
+    return data
+
+
+def getOneDataToShow(scene_id=1):
+    """
+    获取展示某一二维码详情页的 data
+    :param scene_id: 该二维码的scene_id
+    :return: dict,有一个字典item,一个字典数组hold,item内容有scene_id,图片的链接pic,二维码的备注remark,二维码的总的关注数count,hold里面的每一项有两个成员,第一个是date,代表关注的时间,第二个是num,代表今天关注的数量
+    """
+    data = {}
+    temp_data = getDataToShow()
+    for item in temp_data:
+        if item["scene_id"] == scene_id:
+            data["info"] = item
+            break
+    begin_str = data["info"]["time"]  # 最早有人关注的时间为二维码的创建时间
+    begin = datetime.datetime.strptime(begin_str, '%Y-%m-%d %H:%M:%S')
+    begin.replace(hour=0, minute=0, second=0)
+    end = datetime.datetime.today()
+    hold = []
+    while begin < end:
+        next_day = begin + datetime.timedelta(1)
+        begin_temp = begin.strftime('%Y-%m-%d %H:%M:%S')
+        end_temp = next_day.strftime('%Y-%m-%d %H:%M:%S')
+        follow_info = followQuantityCheck(begin_temp, end_temp)
+        for item in follow_info:
+            if item["scene_id"] == scene_id:
+                count = item["count"]
+                break
+        if count > 0:
+            item = {"date": begin_temp, "num": count}
+            hold.append(item)
+        begin = next_day
+    data["hold"] = hold
+    print data
     return data
 
 
@@ -364,21 +399,25 @@ def option():
             print "changed"
             return render_template("index.html", data=getDataToShow())
             # return redirect(url_for("option"), code=302)
+        elif action == "detail":
+            scene_id = request.args.get("qid", 1)
+            return render_template("test.html", data=getOneDataToShow(scene_id))
         else:  # 请求获取网页
             return render_template("index.html", data=getDataToShow())
 
 
 def main():
+    getOneDataToShow()
     # QRRequest(0)
     # changeQRName(1, "t")
     # fraudQRFollowCheck("")
-    followQuantityCheck("0000-00-00 00:00:00", "9999-00-00 00:00:00")
+    # followQuantityCheck("0000-00-00 00:00:00", "9999-00-00 00:00:00")
     # receiveQRFollowInfo()
-    loginCheck("", "")
+    # loginCheck("", "")
     # getDataToShow()
 
 
 if __name__ == "__main__":
     # main()
-    app.run(host="0.0.0.0", port=80)
-    # app.run(port=8000)
+    # app.run(host="0.0.0.0", port=80)
+    app.run(port=8000)
