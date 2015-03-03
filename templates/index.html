@@ -18,14 +18,16 @@
 		<script type="text/javascript">
 			$(document).ready(function(){
 				$("button").click(function(){
+          console.warn("点击了按钮")
 					var ID = $(this).attr("id")
           if(ID == "heihei" || ID == "haha"){
 
           }else{
+              console.warn("现在点击的按钮id为：" + ID)
               var ss = String(ID)
               var len = ss.length
               //取出ss的最后一个字符
-              var test_str = ss.substring(len - 1. len)
+              var test_str = ss.substring(len - 1, len)
               if(test_str == "x"){
                 //用户点击记录按钮
                 //获取真正的用户id

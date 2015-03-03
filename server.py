@@ -16,8 +16,8 @@ app.debug = True
 access_token = ""
 valid_time = 0  # accsee_token 剩余有效时间
 SESSION_TIMEOUT = 60 * 30
-DEFAULT_BEGIN = "0000-00-00 00:00:00"
-DEFAULT_END = "9999-00-00 00:00:00"
+DEFAULT_BEGIN = "0001-01-01 00:00:00"
+DEFAULT_END = "9999-01-01 00:00:00"
 
 
 # functions
@@ -419,5 +419,5 @@ def main():
 
 if __name__ == "__main__":
     # main()
-    app.run(host="0.0.0.0", port=80)
-    # app.run(port=8000)
+    # app.run(host="0.0.0.0", port=80)
+    app.run(port=8000)
