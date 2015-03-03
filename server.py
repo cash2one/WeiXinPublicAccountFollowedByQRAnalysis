@@ -262,6 +262,7 @@ def getOneDataToShow(scene_id=1):
     data_dict = {}
     temp_data = getDataToShow()
     for item in temp_data:
+        print type(item["scene_id"]), type(scene_id)
         if item["scene_id"] == scene_id:
             data_dict["info"] = item
             break
@@ -287,6 +288,7 @@ def getOneDataToShow(scene_id=1):
     data_dict["hold"] = hold
     data = []
     data.append(data_dict)
+    print data
     return data
 
 
@@ -403,7 +405,7 @@ def option():
             # return redirect(url_for("option"), code=302)
         elif action == "detail":
             scene_id = request.args.get("qid", 1)
-            return render_template("test.html", data=getOneDataToShow(scene_id))
+            return render_template("test.html", data=getOneDataToShow(int(scene_id)))
         else:  # 请求获取网页
             return render_template("index.html", data=getDataToShow())
 
@@ -420,6 +422,6 @@ def main():
 
 
 if __name__ == "__main__":
-    #main()
+    # main()
     app.run(host="0.0.0.0", port=80)
     # app.run(port=8000)
