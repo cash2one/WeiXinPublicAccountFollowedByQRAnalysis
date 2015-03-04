@@ -357,8 +357,8 @@ function Hex2Utf8(s)
           <h1 class="text-center">二维码详细信息</h1>
         </div>
         <div class="panel-body">
-		      <table border="1" align=center class="table">
-		        <tr align=center class="danger">
+		      <table border="1" align=center>
+		        <tr align=center >
 			       <th style="text-align:center">二维码ID</th>
 			       <th style="text-align:center">二维码图片（可点击下载）</th>
 			       <th style="text-align:center">二维码性质</th>
@@ -369,7 +369,7 @@ function Hex2Utf8(s)
              <th colspan="2" style="text-align:center">记录</th>
 		        </tr>
 		        {% for item in data%}
-		        <tr align=center class="success">
+		        <tr align=center >
 			       <td>{{item.scene_id}}</td>
 			       <td style="text-align:center"><img src={{item.pic}} id = {{item.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
 			       <td style="text-align:center">永久性</td>
