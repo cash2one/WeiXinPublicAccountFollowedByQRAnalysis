@@ -289,7 +289,7 @@ def getOneDataToShow(scene_id=1, begin_str="none", end_str="none"):
                 count = item["count"]
                 break
         if count > 0:
-            item = {"date": begin_temp, "num": count}
+            item = {"date": begin_temp[:10], "num": count}
             hold.append(item)
         begin = next_day
     data_dict["hold"] = hold
