@@ -107,152 +107,6 @@
         e.options.length = 1;   
    }
   </script>
-        <script type="text/javascript">
-      $(document).ready(function(){
-            
-            $("button").click(function(){
-                var ss = "1234567"
-                alert(ss.substring(ss.length-1, ss.length))
-          });
-      });
-    </script>
-    <script type="text/javascript">
-
-      function EncodeUtf8(s1)
-{
-      var s = escape(s1);
-      var sa = s.split("%");
-      var retV ="";
-      if(sa[0] != "")
-      {
-         retV = sa[0];
-      }
-      for(var i = 1; i < sa.length; i ++)
-      {
-           if(sa[i].substring(0,1) == "u")
-           {
-               retV += Hex2Utf8(Str2Hex(sa[i].substring(1,5)));
-              
-           }
-           else retV += "%" + sa[i];
-      }
-     
-      return retV;
-}
-function Str2Hex(s)
-{
-      var c = "";
-      var n;
-      var ss = "0123456789ABCDEF";
-      var digS = "";
-      for(var i = 0; i < s.length; i ++)
-      {
-         c = s.charAt(i);
-         n = ss.indexOf(c);
-         digS += Dec2Dig(eval(n));
-          
-      }
-      //return value;
-      return digS;
-}
-function Dec2Dig(n1)
-{
-      var s = "";
-      var n2 = 0;
-      for(var i = 0; i < 4; i++)
-      {
-         n2 = Math.pow(2,3 - i);
-         if(n1 >= n2)
-         {
-            s += '1';
-            n1 = n1 - n2;
-          }
-         else
-          s += '0';
-         
-      }
-      return s;
-     
-}
-function Dig2Dec(s)
-{
-      var retV = 0;
-      if(s.length == 4)
-      {
-          for(var i = 0; i < 4; i ++)
-          {
-              retV += eval(s.charAt(i)) * Math.pow(2, 3 - i);
-          }
-          return retV;
-      }
-      return -1;
-}
-function Hex2Utf8(s)
-{
-     var retS = "";
-     var tempS = "";
-     var ss = "";
-     if(s.length == 16)
-     {
-         tempS = "1110" + s.substring(0, 4);
-         tempS += "10" + s.substring(4, 10);
-         tempS += "10" + s.substring(10,16);
-         var sss = "0123456789ABCDEF";
-         for(var i = 0; i < 3; i ++)
-         {
-            retS += "%";
-            ss = tempS.substring(i * 8, (eval(i)+1)*8);
-           
-           
-           
-            retS += sss.charAt(Dig2Dec(ss.substring(0,4)));
-            retS += sss.charAt(Dig2Dec(ss.substring(4,8)));
-         }
-         return retS;
-     }
-     return "";
-} 
-function SetString(str)
- {
-  var strlen = 0; 
-  var s = "";
-  var begin = -1
-  var end = -1
-  var newSTR = ""
-  console.warn(str)
-  for(var i = 0;i < str.length;i++)
-  {
-   if(str.charCodeAt(i) > 128){//中文字符
-    console.warn("扫描到中文字符")
-    if(begin == -1){  //第一次扫描到中文字符
-      begin = i     
-    }
-    if(i == str.length-1 && begin != -1){  //之前扫描到中文字符
-      end = i + 1
-      var chContent = str.substring(begin, end)
-      var encodeContent = EncodeUtf8(chContent)
-      newSTR = newSTR + encodeContent
-    }
-    strlen += 2;
-   }else{ //英文字符
-    console.warn("扫描到非中文字符")
-    if(begin == -1){   //之前没有扫描到中文字符
-
-    }else{           //之前扫描到连续的中文字符
-      end = i;
-      var chContent = str.substring(begin, end)
-      var encodeContent = EncodeUtf8(chContent)
-      newSTR = newSTR + encodeContent
-      begin = -1
-      end = -1
-    }
-    newSTR = newSTR + str.charAt(i)
-   }
-   
-  }
- return newSTR;
- }
-    </script>
   </head>
   <body>
   	<div class="container">
@@ -261,15 +115,15 @@ function SetString(str)
   				<h1 class="text-center">二维码信息</h1>
   			</div>
   			<div class="panel-body">
-        <table border="1" align=center>
-          <tr align=center>
+        <table border="1" align=center class="table">
+          <tr align=center class="danger">
             <th style="text-align:center">二维码ID</th>
             <th style="text-align:center">二维码图片</th>
             <th style="text-align:center">二维码备注</th>
             <th style="text-align:center">二维码关注数</th>
           </tr>
           {% for data_dict in data%}
-          <tr align=center>
+          <tr align=center class="success">
             <td style="text-align:center">{{data_dict.info.scene_id}}</td>
             <td style="text-align:center"><img src={{data_dict.info.pic}} id = {{data_dict.info.scene_id}} class="col-xs-4 col-xs-offset-4 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4 col-sm-4 col-sm-offset-4"/></td>
             <td style="text-align:center">{{data_dict.info.remark}}</td>
@@ -288,7 +142,8 @@ function SetString(str)
         <form name="reg_testdate" action = "/manage/QR/option/" method = "get">
           <center>
            <label>起始时间（格式：yyyy-mm-dd）：</label>
-           <input type="hidden" name="action" value="search" />
+           <input type="hidden" name="action" value="detail_search" />
+           <input type="hidden" name="qid" value={{data_dict.info.scene_id}} /> 
              <select name="BYYYY" onchange="BYYYYDD(this.value)">
               <option value="">请选择 年</option>
              </select>
@@ -323,13 +178,13 @@ function SetString(str)
         <h3 class="text-center">(注：默认显示从0000-00-00至9999-00-00的非0记录)</h3>
       </div>
       <div class="panel-body">
-        <table border="1" align=center>
-          <tr align=center>
+        <table border="1" align=center class="table">
+          <tr align=center class="danger">
             <th style="text-align:center">时间</th>
             <th style="text-align:center">新关注人数</th>
           </tr>
         {% for item in data_dict.hold%}
-          <tr align=center>
+          <tr align=center class="success">
             <td style="text-align:center">{{item.date}}</td>
             <td style="text-align:center">{{item.num}}</td>
           </tr>
