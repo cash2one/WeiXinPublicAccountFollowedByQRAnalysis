@@ -81,8 +81,7 @@ def getQR():
     # date = cursor.fetchone()
     date = datetime.datetime.today()
     date.strftime('%Y-%m-%d %H:%M:%S')
-    # print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
-    date, url)
+    # print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,date, url)
     # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
     cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
                                                                     date, url, encode_ticket ))
