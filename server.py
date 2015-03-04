@@ -77,14 +77,15 @@ def getQR():
     url_to_get_QR = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + encode_ticket
     # print url_to_get_QR
     # QR = urllib.urlopen(url_to_get_QR).read()
-    cursor.execute("""select now()""")
-    date = cursor.fetchone()
+    # cursor.execute("""select now()""")
+    # date = cursor.fetchone()
+    date = datetime.datetime.today()
+    date.strftime('%Y-%m-%d %H:%M:%S')
     print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
-                                                           date[0], url)
+                                                           date, url)
     # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
     cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
-                                                                    date[0], url, encode_ticket ))
-
+                                                                    date, url, encode_ticket ))
     print dict_res
     db.commit()
     cursor.close()
@@ -226,6 +227,7 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
     从数据库获取将要在网页上显示的内容,添加事件从begin 到 end
     :return:list,每个元素为 dict,表示要显示的信息
     """
+    print begin
     follower_list = followQuantityCheck(begin, end)
     db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
     cursor = db.cursor()
@@ -253,11 +255,11 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
     return data
 
 
-def getOneDataToShow(scene_id=1):
+def getOneDataToShow(scene_id=1, begin_str="none", end_str="none"):
     """
     获取展示某一二维码详情页的 data
     :param scene_id: 该二维码的scene_id
-    :return: dict,有一个字典item,一个字典数组hold,item内容有scene_id,图片的链接pic,二维码的备注remark,二维码的总的关注数count,hold里面的每一项有两个成员,第一个是date,代表关注的时间,第二个是num,代表今天关注的数量
+    :return: list,只有一个元素data,data 是一个dict,data有一个字典item,一个字典数组hold,item内容有scene_id,图片的链接pic,二维码的备注remark,二维码的总的关注数count,hold里面的每一项有两个成员,第一个是date,代表关注的时间,第二个是num,代表今天关注的数量
     """
     data_dict = {}
     temp_data = getDataToShow()
@@ -266,11 +268,16 @@ def getOneDataToShow(scene_id=1):
         if item["scene_id"] == scene_id:
             data_dict["info"] = item
             break
-    begin_str = data_dict["info"]["time"]  # 最早有人关注的时间为二维码的创建时间
+    if begin_str == "none":
+        begin_str = data_dict["info"]["time"]  # 最早有人关注的时间为二维码的创建时间
     print begin_str
     begin = datetime.datetime.strptime(begin_str, '%Y-%m-%d %H:%M:%S')
+    # begin = begin + datetime.timedelta(13.0 / 24)  # 服务器时间比北京时间慢13小时
     begin.replace(hour=0, minute=0, second=0)
-    end = datetime.datetime.today()
+    if end_str == "none":
+        end = datetime.datetime.today()
+    else:
+        end = datetime.datetime.strptime(end_str, '%Y-%m-%d %H:%M:%S')
     hold = []
     while begin < end:
         next_day = begin + datetime.timedelta(1)
@@ -290,6 +297,30 @@ def getOneDataToShow(scene_id=1):
     data.append(data_dict)
     print data
     return data
+
+
+def getDate():
+    """
+    得到GET 请求中的 begin 和 end 时间
+    :return:str,begin,end
+    """
+    begin_year = str(request.args.get("BYYYY", DEFAULT_BEGIN))
+    begin_month = str(request.args.get("BMM", DEFAULT_BEGIN))
+    begin_day = str(request.args.get("BDD", DEFAULT_BEGIN))
+    end_year = str(request.args.get("EYYYY", DEFAULT_BEGIN))
+    end_month = str(request.args.get("EMM", DEFAULT_BEGIN))
+    end_day = str(request.args.get("EDD", DEFAULT_BEGIN))
+    begin = begin_year + "-" + begin_month + "-" + begin_day  # + " 00:00:00"
+    end = end_year + "-" + end_month + "-" + end_day  # + " 23:59:59"
+    if begin == "":  # 未输入 time 时当做DEFAULT_BEGIN处理
+        begin = DEFAULT_BEGIN
+    else:
+        begin = begin + " 00:00:00"
+    if end == "":
+        end = DEFAULT_END
+    else:
+        end = end + " 23:59:59"
+    return begin, end
 
 
 # pages
@@ -366,22 +397,7 @@ def option():
             QRRequest(n)
             return render_template("index.html", data=getDataToShow())
         elif action == "search":  # 关注量只显示事件A,B之间的。
-            begin_year = str(request.args.get("BYYYY", DEFAULT_BEGIN))
-            begin_month = str(request.args.get("BMM", DEFAULT_BEGIN))
-            begin_day = str(request.args.get("BDD", DEFAULT_BEGIN))
-            end_year = str(request.args.get("EYYYY", DEFAULT_BEGIN))
-            end_month = str(request.args.get("EMM", DEFAULT_BEGIN))
-            end_day = str(request.args.get("EDD", DEFAULT_BEGIN))
-            begin = begin_year + "-" + begin_month + "-" + begin_day + " 00:00:00"
-            end = end_year + "-" + end_month + "-" + end_day + " 23:59:59"
-            if begin == "":  # 未输入 time 时当做DEFAULT_BEGIN处理
-                begin = DEFAULT_BEGIN
-            else:
-                begin = begin + " 00:00:00"
-            if end == "":
-                end = DEFAULT_END
-            else:
-                end = end + " 00:00:00"
+            begin, end = getDate()
             return render_template("index.html", data=getDataToShow(begin, end))
         elif action == "download":  # 下载id为xxx的二维码图片
             scene_id = request.args.get("qid", 1)
@@ -406,6 +422,10 @@ def option():
         elif action == "detail":
             scene_id = request.args.get("qid", 1)
             return render_template("test.html", data=getOneDataToShow(int(scene_id)))
+        elif action == "detail_search":
+            scene_id = request.args.get("qid", 1)
+            begin, end = getDate()
+            return render_template("test.html", data=getOneDataToShow(int(scene_id), begin, end))
         else:  # 请求获取网页
             return render_template("index.html", data=getDataToShow())
 

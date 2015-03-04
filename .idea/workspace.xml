@@ -27,8 +27,8 @@
       <file leaf-file-name="server.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/server.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.23042506" vertical-offset="9057" max-vertical-offset="9504">
-              <caret line="407" column="85" selection-start-line="407" selection-start-column="85" selection-end-line="407" selection-end-column="85" />
+            <state vertical-scroll-proportion="0.70469797" vertical-offset="9497" max-vertical-offset="9944">
+              <caret line="446" column="6" selection-start-line="446" selection-start-column="6" selection-end-line="446" selection-end-column="6" />
               <folding>
                 <element signature="e#44#66#0" expanded="true" />
               </folding>
@@ -104,6 +104,7 @@
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="FullScreen" value="false" />
+    <property name="SearchEverywhereHistoryKey" value="data&#9;null&#9;null" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -429,10 +430,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages/StdSuites/AppleScript_Suite.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="27835" max-vertical-offset="48840">
+          <caret line="1273" column="6" selection-start-line="1273" selection-start-column="6" selection-end-line="1273" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.23042506" vertical-offset="9057" max-vertical-offset="9504">
-          <caret line="407" column="85" selection-start-line="407" selection-start-column="85" selection-end-line="407" selection-end-column="85" />
+        <state vertical-scroll-proportion="0.70469797" vertical-offset="9497" max-vertical-offset="9944">
+          <caret line="446" column="6" selection-start-line="446" selection-start-column="6" selection-end-line="446" selection-end-column="6" />
           <folding>
             <element signature="e#44#66#0" expanded="true" />
           </folding>
