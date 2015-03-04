@@ -272,8 +272,8 @@ def getOneDataToShow(scene_id=1, begin_str="none", end_str="none"):
     print begin_str
     begin = datetime.datetime.strptime(begin_str, '%Y-%m-%d %H:%M:%S')
     # begin = begin + datetime.timedelta(13.0 / 24)  # 服务器时间比北京时间慢13小时
-    begin.replace(hour=0, minute=0, second=0)
-    begin = begin - datetime.timedelta(2)
+    begin = begin.replace(hour=0, minute=0, second=0)
+    begin = begin - datetime.timedelta(1)
     print begin
     if end_str == "none":
         end = datetime.datetime.today()
