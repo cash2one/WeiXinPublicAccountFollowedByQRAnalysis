@@ -39,7 +39,7 @@ def getAccessToken():
     res = json.loads(urllib2.urlopen(URL + "?" + para).read())
     access_token = res["access_token"]
     expires_in = res["expires_in"]
-    print access_token, expires_in
+    # print access_token, expires_in
     valid_time = time.time() + expires_in / 2  # expires_in为有效的时间,单位s
 
 
@@ -81,12 +81,12 @@ def getQR():
     # date = cursor.fetchone()
     date = datetime.datetime.today()
     date.strftime('%Y-%m-%d %H:%M:%S')
-    print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
-                                                           date, url)
+    # print "scene_id=%s,remark=%s,pic=%s,time=%s,web=%s" % (str(scene_id), str(scene_id), url_to_get_QR,
+    date, url)
     # create table QR(scene_id int,remark text,pic text,time datetime,web text,ticket text,primary key (scene_id));
     cursor.execute("""insert into QR values(%s,%s,%s,%s,%s,%s)""", (str(scene_id), str(scene_id), url_to_get_QR,
                                                                     date, url, encode_ticket ))
-    print dict_res
+    # print dict_res
     db.commit()
     cursor.close()
     db.close()
@@ -118,7 +118,7 @@ def changeQRName(scene_id, remark):
         db.close()
         return True
     else:
-        print "remark didn\"t changed"
+        # print "remark didn\"t changed"
         return False
 
 
@@ -145,13 +145,13 @@ def receiveQRFollowInfo(xml):
                 date = cursor.fetchone()
                 openID = message.source
                 ticket = message.ticket
-                print "%s followed by %s in %s" % (str(openID), str(ticket), date[0])
+                # print "%s followed by %s in %s" % (str(openID), str(ticket), date[0])
                 # create table event(openID varchar(10),ticket text,time datetime,primary key (openID));
                 cursor.execute("""insert into event values(%s,%s,%s)""", (str(openID), str(ticket), date[0],))
                 db.commit()
                 cursor.close()
                 db.close()
-    print "不是二维码关注事件"
+    # print "不是二维码关注事件"
     return False
 
 
@@ -192,10 +192,10 @@ def fraudQRFollowCheck(openID):
     cursor = db.cursor()
     followed = cursor.execute("""select * from event where openID = %s""", (str(openID),))
     if followed:
-        print openID + " has followed"
+        # print openID + " has followed"
         return True
     else:
-        print openID + " hasn't followed"
+        # print openID + " hasn't followed"
         return False
 
 
@@ -207,10 +207,10 @@ def loginCheck(uid, psw):
     :return:合法为 True,否则 False
     """
     if uid == "smie2012" and psw == "123456":
-        print "login successful"
+        # print "login successful"
         return True
     else:
-        print "login error"
+        # print "login error"
         return False
 
 
@@ -227,7 +227,7 @@ def getDataToShow(begin=DEFAULT_BEGIN, end=DEFAULT_END):
     从数据库获取将要在网页上显示的内容,添加事件从begin 到 end
     :return:list,每个元素为 dict,表示要显示的信息
     """
-    print begin
+    # print begin
     follower_list = followQuantityCheck(begin, end)
     db = MySQLdb.connect(host="localhost", user="root", passwd="lxb", db="QR", charset="utf8")
     cursor = db.cursor()
@@ -264,7 +264,7 @@ def getOneDataToShow(scene_id=1, begin_str="none", end_str="none"):
     data_dict = {}
     temp_data = getDataToShow()
     for item in temp_data:
-        print type(item["scene_id"]), type(scene_id)
+        # print type(item["scene_id"]), type(scene_id)
         if item["scene_id"] == scene_id:
             data_dict["info"] = item
             break
@@ -297,7 +297,7 @@ def getOneDataToShow(scene_id=1, begin_str="none", end_str="none"):
     data_dict["hold"] = hold
     data = []
     data.append(data_dict)
-    print data
+    # print data
     return data
 
 
@@ -341,7 +341,7 @@ def verify():
         if wechat.check_signature(signature=signature, timestamp=timestamp, nonce=nonce):
             return echostr
     if request.method == "POST":
-        print "enter post"
+        # print "enter post"
         body_text = request.data
         receiveQRFollowInfo(body_text)
 
@@ -389,7 +389,7 @@ def option():
         return redirect(url_for("login"))
     else:
         action = request.args.get("action", "none")
-        print action
+        # print action
         if action == "addQR":  # 生成n个二维码
             n = request.args.get("number", 0)
             if n == "":
@@ -418,7 +418,7 @@ def option():
             # remark = unicode((encode_remark), "utf-8")  # 将url 编码转为 unicode 对象
             # print remark
             changeQRName(scene_id, remark)
-            print "changed"
+            # print "changed"
             return render_template("index.html", data=getDataToShow())
             # return redirect(url_for("option"), code=302)
         elif action == "detail":
